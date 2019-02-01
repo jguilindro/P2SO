@@ -95,9 +95,10 @@ void *sensorDistancia(void *args) //Funcion creadora de procesos
     printf("%d\n", keys->keyt);
     pid_t pid = fork(); //Crea una copia del proceso padre
     char c;
-    int shmidd, shmidt;
-
-    char *shmd, *shmt;
+    int shmidd, shmidt, shmids;
+    key_t keysec;
+    char *shmd, *shmt, *shms;
+    char tmps[SHMSZ];
     int i, j;
     float distances[MAX_SAMPLES];
     float angles[MAX_SAMPLES_THETA];
@@ -115,9 +116,6 @@ void *sensorDistancia(void *args) //Funcion creadora de procesos
     {
         printf("Sensores activados con PID:  %d\n", (int)getpid()); //Alerta al usuario y muestra el PID del proceso creado
 
-        tim.tv_sec = 1;
-        tim.tv_nsec = 0;
-
         if ((shmidd = shmget(keys->keyd, SHMSZ, IPC_CREAT | 0666)) < 0)
         {
             perror("shmget");
@@ -134,6 +132,17 @@ void *sensorDistancia(void *args) //Funcion creadora de procesos
             exit(1);
         }
         if ((shmt = shmat(shmidt, NULL, 0)) == (char *)-1)
+        {
+            perror("shmat");
+            exit(1);
+        }
+        keysec = 1928;
+        if ((shmids = shmget(keysec, SHMSZ, IPC_CREAT | 0666)) < 0)
+        {
+            perror("shmget");
+            exit(1);
+        }
+        if ((shms = shmat(shmids, NULL, 0)) == (char *)-1)
         {
             perror("shmat");
             exit(1);
@@ -171,6 +180,10 @@ void *sensorDistancia(void *args) //Funcion creadora de procesos
 
         for (i = 0; i < j; i++)
         {
+            strcpy(tmps, shms);
+
+            tim.tv_sec = atoi(tmps);
+            tim.tv_nsec = 0;
             if (nanosleep(&tim, &tim2) < 0)
             {
                 printf("Nano sleep failed \n");

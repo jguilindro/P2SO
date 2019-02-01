@@ -99,7 +99,6 @@ int main(int argc, char *argv[])
 
 void *lectorSensor(void *args)
 {
-    //system("gnome-terminal");
     struct keys *keys = args;
     printf("%d\n", keys->keyd);
     printf("%d\n", keys->keyt);
@@ -168,6 +167,18 @@ void *lectorSensor(void *args)
             distanciaExiste = 0;
             anguloExiste = 0;
         }
+        
+
+
+        /*
+        strcpy(tmpt,shmt);
+		if ((strcmp(tmpt,"--")!=0)&&(strcmp(oldt,tmpt)!=0)){
+			fprintf(stdout,"giroscopio: %s\n",tmpt);
+			strcpy(oldt,tmpt);
+        }
+		if (strcmp(shmd,tmpd)!=0)
+			fprintf(stderr,"distancia %s\n",shmd);
+		strcpy(tmpd,shmd);*/
     }
 }
 
