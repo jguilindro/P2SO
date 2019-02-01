@@ -114,11 +114,17 @@ int main(void)
 
     do
     {
+        char tmpi[SHMSZ], tmpq[SHMSZ], tmpw[SHMSZ], tmpt[SHMSZ];
+        strcpy(tmpi, shms);
+        strcpy(tmpw, shmw);
+        strcpy(tmpt, shmt);
+        strcpy(tmpq, shmq);
+
         printf("******** Controlador de Parámetros ********\n\n");
-        printf("1. Cambiar el valor de I\n");
-        printf("\n2. Cambiar el valor de Q\n");
-        printf("\n3. Cambiar el valor de W\n");
-        printf("\n4. Cambiar el valor de T\n");
+        printf("1. Cambiar el valor de I actual (%s)\n", tmpi);
+        printf("\n2. Cambiar el valor de Q actual (%s)\n", tmpq);
+        printf("\n3. Cambiar el valor de W actual (%s)\n", tmpw);
+        printf("\n4. Cambiar el valor de T actual (%s)\n", tmpt);
         printf("\n5. Exit\n");
         printf("\nIngrese la opción: ");
         scanf("%d", &opcion);
