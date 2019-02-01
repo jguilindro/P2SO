@@ -9,54 +9,106 @@
 #define SHMSZ 27
 int main(void)
 {
-    int shmids, shmidq, shmidw, shmidt, value;
+    int shmids, shmidq, shmidw, shmidt, valor;
     char *shms, *shmq, *shmw, *shmt;
     key_t keys, keyq, keyw, keyt;
     //system("pwd");
-    keys = 1928;
-    if ((shmids = shmget(keys, SHMSZ, IPC_CREAT | 0666)) < 0)
+
+    FILE *config = fopen("../config/parameters1.txt", "r");
+
+    char buffer[100];
+    char param[10], value[10], mem[10];
+
+    if (config == NULL)
     {
-        perror("shmget");
-        exit(1);
+        printf("No se puede abrir el archivo de configuracion");
     }
-    if ((shms = shmat(shmids, NULL, 0)) == (char *)-1)
+    else
     {
-        perror("shmat");
-        exit(1);
+
+        while (fgets(buffer, 100, config) != NULL)
+        {
+            sscanf(buffer, "%[^:]:%[^,],%s", param, value, mem);
+            if (strcmp(param, "i") == 0)
+            {
+                //printf("%s %d %d\n",param, atoi(value), atoi(mem));
+                keys = atoi(mem);
+                if ((shmids = shmget(keys, SHMSZ, IPC_CREAT | 0666)) < 0)
+                {
+                    perror("shmget");
+                    exit(1);
+                }
+                if ((shms = shmat(shmids, NULL, 0)) == (char *)-1)
+                {
+                    perror("shmat");
+                    exit(1);
+                }
+                printf("Leyendo el valor de I=%s en el espacio de mem compartida %s\n", value, mem);
+                
+            }
+
+            if (strcmp(param, "q") == 0)
+            {
+                //printf("%s %d %d\n",param, atoi(value), atoi(mem));
+                keyq = atoi(mem);
+                if ((shmidq = shmget(keyq, SHMSZ, IPC_CREAT | 0666)) < 0)
+                {
+                    perror("shmget");
+                    exit(1);
+                }
+                if ((shmq = shmat(shmidq, NULL, 0)) == (char *)-1)
+                {
+                    perror("shmat");
+                    exit(1);
+                }
+                printf("Leyendo el valor de Q=%s en el espacio de mem compartida %s\n", value, mem);
+                
+            }
+
+            if (strcmp(param, "w") == 0)
+            {
+                //printf("%s %d %d\n",param, atoi(value), atoi(mem));
+                keyw = atoi(mem);
+                if ((shmidw = shmget(keyw, SHMSZ, IPC_CREAT | 0666)) < 0)
+                {
+                    perror("shmget");
+                    exit(1);
+                }
+                if ((shmw = shmat(shmidw, NULL, 0)) == (char *)-1)
+                {
+                    perror("shmat");
+                    exit(1);
+                }
+                printf("Leyendo el valor de W=%s en el espacio de mem compartida %s\n", value, mem);
+                
+            }
+
+            if (strcmp(param, "t") == 0)
+            {
+                //printf("%s %d %d\n",param, atoi(value), atoi(mem));
+                keyt = atoi(mem);
+                if ((shmidt = shmget(keyt, SHMSZ, IPC_CREAT | 0666)) < 0)
+                {
+                    perror("shmget");
+                    exit(1);
+                }
+                if ((shmt = shmat(shmidt, NULL, 0)) == (char *)-1)
+                {
+                    perror("shmat");
+                    exit(1);
+                }
+                printf("Leyendo el valor de T=%s en el espacio de mem compartida %s\n", value, mem);
+                
+            }
+        }
     }
-    keyq = 1929;
-    if ((shmidq = shmget(keyq, SHMSZ, IPC_CREAT | 0666)) < 0)
+
+    if (ferror(config))
     {
-        perror("shmget");
-        exit(1);
+        perror("El siguiente error ocurrio");
     }
-    if ((shmq = shmat(shmidq, NULL, 0)) == (char *)-1)
-    {
-        perror("shmat");
-        exit(1);
-    }
-    keyw = 1930;
-    if ((shmidw = shmget(keyw, SHMSZ, IPC_CREAT | 0666)) < 0)
-    {
-        perror("shmget");
-        exit(1);
-    }
-    if ((shmw = shmat(shmidw, NULL, 0)) == (char *)-1)
-    {
-        perror("shmat");
-        exit(1);
-    }
-    keyt = 1931;
-    if ((shmidt = shmget(keyt, SHMSZ, IPC_CREAT | 0666)) < 0)
-    {
-        perror("shmget");
-        exit(1);
-    }
-    if ((shmt = shmat(shmidt, NULL, 0)) == (char *)-1)
-    {
-        perror("shmat");
-        exit(1);
-    }
+
+    fclose(config);
 
     int opcion;
 
@@ -75,26 +127,26 @@ int main(void)
         {
         case 1:
             printf("\nIngresar el nuevo valor de I: ");
-            scanf("%d", &value);
-            sprintf(shms, "%d", value);
+            scanf("%d", &valor);
+            sprintf(shms, "%d", valor);
             system("clear");
             break;
         case 2:
             printf("\nIngresar el nuevo valor de Q: ");
-            scanf("%d", &value);
-            sprintf(shmq, "%d", value);
+            scanf("%d", &valor);
+            sprintf(shmq, "%d", valor);
             system("clear");
             break;
         case 3:
             printf("\nIngresar el nuevo valor de W: ");
-            scanf("%d", &value);
-            sprintf(shmw, "%d", value);
+            scanf("%d", &valor);
+            sprintf(shmw, "%d", valor);
             system("clear");
             break;
         case 4:
             printf("\nIngresar el nuevo valor de T: ");
-            scanf("%d", &value);
-            sprintf(shmt, "%d", value);
+            scanf("%d", &valor);
+            sprintf(shmt, "%d", valor);
             system("clear");
             break;
         case 5:

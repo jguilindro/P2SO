@@ -91,8 +91,8 @@ int main(int argc, char *argv[])
 void *sensorDistancia(void *args) //Funcion creadora de procesos
 {
     struct keys *keys = args;
-    printf("%d\n", keys->keyd);
-    printf("%d\n", keys->keyt);
+    printf("Escribiendo memoria compartida con llave: %d\n", keys->keyd);
+    printf("Escribiendo memoria compartida con llave: %d\n", keys->keyt);
     pid_t pid = fork(); //Crea una copia del proceso padre
     char c;
     int shmidd, shmidt, shmids;
