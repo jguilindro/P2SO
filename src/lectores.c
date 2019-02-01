@@ -30,19 +30,19 @@
 
 #define SHMSZ 27
 #define MAX_SAMPLES 100
-#define MAX_SAMPLES_THETA 50
 #define DIST 10
 #define PI 3.14159265
 
-int shmidd, shmidt;
+int shmidd, shmidt, shmidq;
+int numSamples = 0, iSamples = 0;
+float samples[MAX_SAMPLES];
 struct keys
 {
     key_t keyd;
     key_t keyt;
 };
 clock_t ti, tf;
-char *shmd, *shmt;
-
+char *shmd, *shmt, *shmq;
 
 //Funcion que crea procesos
 void *lectorSensor();
@@ -102,6 +102,7 @@ void *lectorSensor(void *args)
     struct keys *keys = args;
     printf("%d\n", keys->keyd);
     printf("%d\n", keys->keyt);
+    key_t keyq;
     char tmpd[SHMSZ];
     char oldt[SHMSZ];
     char tmpt[SHMSZ];
@@ -124,6 +125,18 @@ void *lectorSensor(void *args)
         exit(1);
     }
     if ((shmt = shmat(shmidt, NULL, 0)) == (char *)-1)
+    {
+        perror("shmat");
+        exit(1);
+    }
+
+    keyq = 1929;
+    if ((shmidq = shmget(keyq, SHMSZ, IPC_CREAT | 0666)) < 0)
+    {
+        perror("shmget");
+        exit(1);
+    }
+    if ((shmq = shmat(shmidq, NULL, 0)) == (char *)-1)
     {
         perror("shmat");
         exit(1);
@@ -158,8 +171,8 @@ void *lectorSensor(void *args)
             dist = atof(shmd); //distancia
             ang = atof(tmpt);  //angulo
 
-            fprintf(stdout, "giroscopio: %s\n", tmpt);
-            fprintf(stderr, "distancia %s\n", shmd);
+            //fprintf(stdout, "giroscopio: %s\n", tmpt);
+            //fprintf(stderr, "distancia %s\n", shmd);
             pthread_mutex_unlock(&lock);
             pthread_attr_init(&attr); //Inicializar atributo por defecto
 
@@ -167,8 +180,6 @@ void *lectorSensor(void *args)
             distanciaExiste = 0;
             anguloExiste = 0;
         }
-        
-
 
         /*
         strcpy(tmpt,shmt);
@@ -184,16 +195,40 @@ void *lectorSensor(void *args)
 
 void *calcularDistancia(void *param)
 {
-    float distanciaReal = dist * cos(ang / 180 * PI);
+    char tmpq[SHMSZ];
+    float acumSamples = 0.0f, meanSamples = 0.0f;
+    strcpy(tmpq, shmq);
 
-    printf("La distancia real es: %f", distanciaReal);
+    if (iSamples > atoi(tmpq)-1)
+    {
+        for (int i = 0; i < iSamples; i++)
+        {
+            acumSamples = acumSamples + samples[i];
+        }
+        meanSamples = acumSamples / iSamples;
+        printf("\nMedia: %f\n\n", meanSamples);
+        pthread_mutex_t lock;
+        pthread_mutex_lock(&lock);
+        iSamples = 0;
+        pthread_mutex_unlock(&lock);
+    }
+    float distanciaReal = dist * cos(ang / 180 * PI);
+    samples[iSamples] = distanciaReal;
+    printf("Muestra #%d\n",iSamples+1);
+    printf("giroscopio: %f\n", ang);
+    printf("distancia %f\n\n", dist);
     pthread_mutex_t lock;
+    pthread_mutex_lock(&lock);
+    iSamples++;
+    pthread_mutex_unlock(&lock);
+    //printf("La distancia real es: %f", distanciaReal);
+    /*pthread_mutex_t lock;
     pthread_mutex_lock(&lock);
     tf = clock();
     pthread_mutex_unlock(&lock);
     time_t t = tf - ti;
     double time_taken = ((double)t) / CLOCKS_PER_SEC; // in seconds
-    printf(" || Tiempo de respuesta: %f segundos\n\n", time_taken);
+    printf(" || Tiempo de respuesta: %f segundos\n\n", time_taken);*/
 
     pthread_exit(0);
 }
