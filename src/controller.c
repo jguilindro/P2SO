@@ -10,11 +10,12 @@
 int main(void)
 {
     int shmids, shmidq, shmidw, shmidt, valor;
+    float valorf;
     char *shms, *shmq, *shmw, *shmt;
     key_t keys, keyq, keyw, keyt;
     //system("pwd");
 
-    FILE *config = fopen("../config/parameters1.txt", "r");
+    FILE *config = fopen("../config/parameters.txt", "r");
 
     char buffer[100];
     char param[10], value[10], mem[10];
@@ -43,7 +44,7 @@ int main(void)
                     perror("shmat");
                     exit(1);
                 }
-                printf("Leyendo el valor de I=%s en el espacio de mem compartida %s\n", value, mem);
+                //printf("Leyendo el valor de I=%s en el espacio de mem compartida %s\n", value, mem);
                 
             }
 
@@ -61,7 +62,7 @@ int main(void)
                     perror("shmat");
                     exit(1);
                 }
-                printf("Leyendo el valor de Q=%s en el espacio de mem compartida %s\n", value, mem);
+                //printf("Leyendo el valor de Q=%s en el espacio de mem compartida %s\n", value, mem);
                 
             }
 
@@ -79,7 +80,7 @@ int main(void)
                     perror("shmat");
                     exit(1);
                 }
-                printf("Leyendo el valor de W=%s en el espacio de mem compartida %s\n", value, mem);
+                //printf("Leyendo el valor de W=%s en el espacio de mem compartida %s\n", value, mem);
                 
             }
 
@@ -97,7 +98,7 @@ int main(void)
                     perror("shmat");
                     exit(1);
                 }
-                printf("Leyendo el valor de T=%s en el espacio de mem compartida %s\n", value, mem);
+                //printf("Leyendo el valor de T=%s en el espacio de mem compartida %s\n", value, mem);
                 
             }
         }
@@ -144,15 +145,15 @@ int main(void)
             system("clear");
             break;
         case 3:
-            printf("\nIngresar el nuevo valor de W: ");
+            printf("\nIngresar el nuevo valor de W (> 1): ");
             scanf("%d", &valor);
             sprintf(shmw, "%d", valor);
             system("clear");
             break;
         case 4:
-            printf("\nIngresar el nuevo valor de T: ");
-            scanf("%d", &valor);
-            sprintf(shmt, "%d", valor);
+            printf("\nIngresar el nuevo valor de T (> 0, < 1): ");
+            scanf("%f", &valorf);
+            sprintf(shmt, "%f", valorf);
             system("clear");
             break;
         case 5:

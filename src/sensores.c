@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
     }
 
     fclose(config);
+    printf("**** Sensores de Distancia y Giroscopio Iniciados ****\n\n");
 
     for (i = 0; i < 3; i++)
     {

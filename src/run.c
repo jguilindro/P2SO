@@ -14,7 +14,7 @@ int main(void)
     key_t keys, keyq, keyw, keyt;
     //system("pwd");
 
-    FILE *config = fopen("../config/parameters1.txt", "r");
+    FILE *config = fopen("../config/parameters.txt", "r");
 
     char buffer[100];
     char param[10], value[10], mem[10];

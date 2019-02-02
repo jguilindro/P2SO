@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
 
     fclose(config);
 
-    FILE *config2 = fopen("../config/parameters1.txt", "r");
+    FILE *config2 = fopen("../config/parameters.txt", "r");
 
     char param[10], value[10], mem[10];
 
@@ -109,9 +109,9 @@ int main(int argc, char *argv[])
 
             if (strcmp(param, "q") == 0)
             {
-                //printf("%s %d %d\n",param, atoi(value), atoi(mem));
+              
                 keys.keyq = atoi(mem);
-                //printf("Leyendo el valor de Q=%s en el espacio de mem compartida %s\n", value, mem);
+
             }
         }
     }
@@ -133,9 +133,9 @@ int main(int argc, char *argv[])
 void *lectorSensor(void *args)
 {
     struct keys *keys = args;
-    printf("Leyendo memoria compartida con llave: %d\n", keys->keyd);
-    printf("Leyendo memoria compartida con llave: %d\n", keys->keyt);
-    printf("Leyendo memoria compartida con llave: %d\n", keys->keyq);
+    //printf("Leyendo memoria compartida con llave: %d\n", keys->keyd);
+    //printf("Leyendo memoria compartida con llave: %d\n", keys->keyt);
+    //printf("Leyendo memoria compartida con llave: %d\n", keys->keyq);
     key_t keyq;
     char tmpd[SHMSZ];
     char oldt[SHMSZ];
@@ -216,8 +216,6 @@ void *lectorSensor(void *args)
             dist = atof(shmd); //distancia
             ang = atof(tmpt);  //angulo
 
-            //fprintf(stdout, "giroscopio: %s\n", tmpt);
-            //fprintf(stderr, "distancia %s\n", shmd);
             pthread_mutex_unlock(&lock);
             pthread_attr_init(&attr); //Inicializar atributo por defecto
 
@@ -226,15 +224,6 @@ void *lectorSensor(void *args)
             anguloExiste = 0;
         }
 
-        /*
-        strcpy(tmpt,shmt);
-		if ((strcmp(tmpt,"--")!=0)&&(strcmp(oldt,tmpt)!=0)){
-			fprintf(stdout,"giroscopio: %s\n",tmpt);
-			strcpy(oldt,tmpt);
-        }
-		if (strcmp(shmd,tmpd)!=0)
-			fprintf(stderr,"distancia %s\n",shmd);
-		strcpy(tmpd,shmd);*/
     }
 }
 
@@ -267,14 +256,6 @@ void *calcularDistancia(void *param)
     pthread_mutex_lock(&lock);
     iSamples++;
     pthread_mutex_unlock(&lock);
-    //printf("La distancia real es: %f", distanciaReal);
-    /*pthread_mutex_t lock;
-    pthread_mutex_lock(&lock);
-    tf = clock();
-    pthread_mutex_unlock(&lock);
-    time_t t = tf - ti;
-    double time_taken = ((double)t) / CLOCKS_PER_SEC; // in seconds
-    printf(" || Tiempo de respuesta: %f segundos\n\n", time_taken);*/
 
     pthread_exit(0);
 }

@@ -22,7 +22,7 @@ int main(void)
     char tmpizq[SHMSZ];
     //system("pwd");
 
-    FILE *config = fopen("../config/parameters1.txt", "r");
+    FILE *config = fopen("../config/parameters.txt", "r");
 
     char buffer[100];
     char param[10], value[10], mem[10];
@@ -52,7 +52,7 @@ int main(void)
                     perror("shmat");
                     exit(1);
                 }
-                printf("Leyendo el valor de W en el espacio de mem compartida %s\n", mem);
+                //printf("Leyendo el valor de W en el espacio de mem compartida %s\n", mem);
             }
 
             if (strcmp(param, "t") == 0)
@@ -69,7 +69,7 @@ int main(void)
                     perror("shmat");
                     exit(1);
                 }
-                printf("Leyendo el valor de T en el espacio de mem compartida %s\n", mem);
+                //printf("Leyendo el valor de T en el espacio de mem compartida %s\n", mem);
             }
         }
     }
@@ -114,7 +114,7 @@ int main(void)
         perror("shmat");
         exit(1);
     }
-
+    printf("***** Visor de datos y Obstaculos ******\n\n");
     while (1)
     {
         strcpy(tmpt, shmt);
@@ -126,14 +126,18 @@ int main(void)
         if (strcmp(tmpcen, "0.000000") != 0 && strcmp(tmpizq, "0.000000") != 0 && strcmp(tmpder, "0.000000") != 0)
         {
 
-            system("clear");
+            //system("clear");
+            
             float sigma= calcularDS(atof(tmpcen), atof(tmpder), atof(tmpizq));
 
-            if (fabs(tmpcen - tmpder)>(atof(tmpt)*sigma) && fabs(tmpcen - tmpizq)>(atof(tmpt)*sigma)){
+            printf("\n*********\nCentro: %s\nIzquierda: %s\nDerecha: %s\nCentro-Izq: %f\nCentro-Der: %f\nSigma: %f\nT*sigma: %f\nW*sigma: %f\n*********\n", tmpcen, tmpizq, tmpder,fabs(atof(tmpcen) - atof(tmpizq)),fabs(atof(tmpcen) - atof(tmpder)), sigma, atof(tmpt)*sigma, atof(tmpw)*sigma);
+            //printf("\n\nCentro-Der (bool T): %d\nCentro-Izq (bool T): %d\nCentro-Der (bool W): %d\nCentro-Izq (bool W): %d\nDer-Izq (bool W): %d\n", ((atof(tmpcen) - atof(tmpder))<=(atof(tmpt)*sigma)), (fabs(atof(tmpcen) - atof(tmpizq))<=(atof(tmpt)*sigma)),(fabs(atof(tmpcen) - atof(tmpder))<=(atof(tmpw)*sigma)),(fabs(atof(tmpcen) - atof(tmpizq))<=(atof(tmpw)*sigma)),(fabs(atof(tmpder) - atof(tmpizq))<=(atof(tmpw)*sigma)));
+            
+            if ((fabs(atof(tmpcen) - atof(tmpder))<=(atof(tmpt)*sigma)) && (fabs(atof(tmpcen) - atof(tmpizq))<=(atof(tmpt)*sigma)) ){
                 printf("Existe un carro al frente de su carro.\n");
             }
 
-            if (fabs(tmpcen - tmpder)>(atof(tmpw)*sigma) || fabs(tmpcen - tmpizq)>(atof(tmpw)*sigma) || fabs(tmpder - tmpizq)>(atof(tmpw)*sigma)){
+            if ((fabs(atof(tmpcen) - atof(tmpder))==(atof(tmpw)*sigma)) || (fabs(atof(tmpcen) - atof(tmpizq))==(atof(tmpw)*sigma)) || (fabs(atof(tmpder) - atof(tmpizq))==(atof(tmpw)*sigma))){
                 printf("Existe un obstaculo al frente de su carro.\n");
             }
             
