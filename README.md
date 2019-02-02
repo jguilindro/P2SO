@@ -23,6 +23,13 @@ cd bin/
 ./run
 
 ```
+
+Limpiar ejecutables
+```shell
+make clean
+
+```
+
 ## Edición de archivos de configuración
 Se tienen 2 archivos de configuración: config.txt y parameters.txt
 
